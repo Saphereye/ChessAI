@@ -1,5 +1,5 @@
 import chess
-from chess import Move, Board
+from chess import Board
 
 # Credits: Claude Shannon in 1949
 def evaluate_board(board: Board):
@@ -50,7 +50,6 @@ def evaluate_board(board: Board):
         + (piece_counts[chess.PAWN][0] - piece_counts[chess.PAWN][1])
         - 0.5 * (blocked_pawns[0] - blocked_pawns[1])
         + 0.1 * (mobility[0] - mobility[1])
-        # Add more terms based on your formula
     )
 
     return evaluation

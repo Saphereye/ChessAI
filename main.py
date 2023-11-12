@@ -3,8 +3,9 @@ from bots.random_bot import RandomBot
 from bots.dfs_bot import DFSBot
 from bots.helper import *
 
-bot1 = DFSBot(max_depth=3)
-# bot2 = DFSBot(max_depth=10)
+# bot1 = DFSBot(max_depth=1)
+bot1 = RandomBot()
+# bot2 = DFSBot(max_depth=3)
 bot2 = RandomBot()
 
 board = chess.Board()
@@ -26,7 +27,7 @@ while True:
         break
 
     bot2_move = bot2.move(board)
-    print(f"White moves: {bot2_move}")
+    print(f"Black moves: {bot2_move}")
     board.push(bot2_move)
     print(board)
     print(f"Evaluation: {evaluate_board(board) : .2f}")
