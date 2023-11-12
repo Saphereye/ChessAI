@@ -2,6 +2,9 @@ import chess
 from bots.random_bot import RandomBot
 from bots.dfs_bot import DFSBot
 from bots.helper import *
+from chessboard import display
+
+display_board = display.start()
 
 # bot1 = DFSBot(max_depth=1)
 bot1 = RandomBot()
@@ -19,7 +22,8 @@ while True:
     bot1_move = bot1.move(board)
     print(f"White moves: {bot1_move}")
     board.push(bot1_move)
-    print(board)
+    # print(board)
+    display.update(board.fen(), display_board)
     print(f"Evaluation: {evaluate_board(board) : .2f}")
 
     if board.is_game_over():
@@ -29,7 +33,8 @@ while True:
     bot2_move = bot2.move(board)
     print(f"Black moves: {bot2_move}")
     board.push(bot2_move)
-    print(board)
+    # print(board)
+    display.update(board.fen(), display_board)
     print(f"Evaluation: {evaluate_board(board) : .2f}")
 
     if board.is_game_over():
@@ -52,3 +57,4 @@ else:
     print("The game has ended for an unknown reason")
 
 print(board)
+input()
