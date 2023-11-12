@@ -3,13 +3,15 @@ from bots.random_bot import RandomBot
 from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot
 from bots.helper import *
 from chessboard import display
+import matplotlib.pyplot as plt
 
 def main():
     display_board = display.start()
+    evaluation_list = []
 
-    # bot1 = GreedyDFSBot(max_depth=3)
-    bot1 = FuzzyDFSBot(max_depth=3, fuzziness_factor=0.5)
-    # bot2 = FuzzyDFSBot(max_depth=3, fuzziness_factor=0.5)
+    # bot1 = RandomBot()
+    bot1 = FuzzyDFSBot(max_depth=2)
+    # bot2 = GreedyDFSBot(max_depth=2)
     bot2 = RandomBot()
 
     board = chess.Board()
@@ -25,7 +27,9 @@ def main():
         board.push(bot1_move)
         # print(board)
         display.update(board.fen(), display_board)
-        print(f"Evaluation: {evaluate_board(board) : .2f}")
+        evaluation = evaluate_board(board)
+        evaluation_list.append(evaluation)
+        print(f"Evaluation: {evaluation : .2f}")
 
         if board.is_game_over():
             potential_winner = "White"
@@ -36,7 +40,9 @@ def main():
         board.push(bot2_move)
         # print(board)
         display.update(board.fen(), display_board)
-        print(f"Evaluation: {evaluate_board(board) : .2f}")
+        evaluation = evaluate_board(board)
+        evaluation_list.append(evaluation)
+        print(f"Evaluation: {evaluation : .2f}")
 
         if board.is_game_over():
             potential_winner = "Black"
@@ -58,7 +64,8 @@ def main():
         print("The game has ended for an unknown reason")
 
     print(board)
+    plt.plot([i+1 for i in range(len(evaluation_list))], evaluation_list)
+    plt.show()
 
 if __name__ == "__main__":
     main()
-    input()

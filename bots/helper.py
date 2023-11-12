@@ -51,4 +51,7 @@ def evaluate_board(board: Board):
         + 0.1 * (mobility[0] - mobility[1])
     )
 
+    # if board.is_check():
+    #     evaluation += 20 * (1 if board.turn == chess.BLACK else -1)
+
     return evaluation
