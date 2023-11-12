@@ -9,8 +9,8 @@ def main():
 
     # bot1 = GreedyDFSBot(max_depth=3)
     bot1 = FuzzyDFSBot(max_depth=3, fuzziness_factor=0.5)
-    bot2 = FuzzyDFSBot(max_depth=3, fuzziness_factor=0.5)
-    # bot2 = RandomBot()
+    # bot2 = FuzzyDFSBot(max_depth=3, fuzziness_factor=0.5)
+    bot2 = RandomBot()
 
     board = chess.Board()
 
