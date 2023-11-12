@@ -4,8 +4,8 @@ from bots.dfs_bot import DFSBot
 from bots.helper import *
 
 bot1 = DFSBot(max_depth=3)
-bot2 = DFSBot(max_depth=3)
-# bot2 = RandomBot()
+# bot2 = DFSBot(max_depth=10)
+bot2 = RandomBot()
 
 board = chess.Board()
 
