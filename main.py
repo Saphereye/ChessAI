@@ -1,15 +1,15 @@
 import chess
 from bots.random_bot import RandomBot
-from bots.dfs_bot import DFSBot
+from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot
 from bots.helper import *
 from chessboard import display
 
 def main():
     display_board = display.start()
 
-    bot1 = DFSBot(max_depth=3)
-    # bot1 = RandomBot()
-    bot2 = DFSBot(max_depth=1)
+    # bot1 = GreedyDFSBot(max_depth=3)
+    bot1 = FuzzyDFSBot(max_depth=3, fuzziness_factor=0.5)
+    bot2 = FuzzyDFSBot(max_depth=3, fuzziness_factor=0.5)
     # bot2 = RandomBot()
 
     board = chess.Board()

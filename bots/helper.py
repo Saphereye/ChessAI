@@ -12,18 +12,17 @@ def evaluate_board(board: Board):
         chess.KING: [0, 0],
     }
     blocked_pawns = [0, 0]
-    mobility = [0, 0]
 
-    if board.turn == chess.WHITE:
-            mobility[0] = 0.1 * len(list(board.legal_moves))
-            board.turn = chess.BLACK
-            mobility[1] = 0.1 * len(list(board.legal_moves))
-            board.turn = chess.WHITE
-    else:
-            mobility[1] = 0.1 * len(list(board.legal_moves))
-            board.turn = chess.WHITE
-            mobility[0] = 0.1 * len(list(board.legal_moves))
-            board.turn = chess.BLACK
+    current_turn = board.turn
+
+    board.turn = chess.WHITE
+    white_legal_moves = list(board.legal_moves)
+    board.turn = chess.BLACK
+    black_legal_moves = list(board.legal_moves)
+
+    board.turn = current_turn
+
+    mobility = [0.1 * len(white_legal_moves), 0.1 * len(black_legal_moves)]
 
     for square in chess.SQUARES:
         piece = board.piece_at(square)
