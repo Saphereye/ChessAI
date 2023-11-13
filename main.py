@@ -12,7 +12,7 @@ while not board.is_game_over():
     bot1_move = bot1.move(board)
     if bot1_move is None:
         print("No legal moves left")
-        break
+        break   
     board.push(bot1_move)
     print(board)
     print("Bot 2")
