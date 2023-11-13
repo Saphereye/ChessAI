@@ -1,29 +1,71 @@
 import chess
-from bots.base_bot import BaseBot
 from bots.random_bot import RandomBot
+from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot
+from bots.helper import *
+from chessboard import display
+import matplotlib.pyplot as plt
 
-bot1 = RandomBot()
-bot2 = RandomBot()
+def main():
+    display_board = display.start()
+    evaluation_list = []
 
-board = chess.Board()
+    # bot1 = RandomBot()
+    bot1 = FuzzyDFSBot(max_depth=2)
+    # bot2 = GreedyDFSBot(max_depth=2)
+    bot2 = RandomBot()
 
-while not board.is_game_over():
-    print("Bot 1")
-    bot1_move = bot1.move(board)
-    if bot1_move is None:
-        print("No legal moves left")
-        break   
-    board.push(bot1_move)
+    board = chess.Board()
+
+    potential_winner = None
+
+    turn_number = 1
+
+    while True:
+        print(f"Turn Number: {turn_number}")
+        bot1_move = bot1.move(board)
+        print(f"White moves: {bot1_move}")
+        board.push(bot1_move)
+        # print(board)
+        display.update(board.fen(), display_board)
+        evaluation = evaluate_board(board)
+        evaluation_list.append(evaluation)
+        print(f"Evaluation: {evaluation : .2f}")
+
+        if board.is_game_over():
+            potential_winner = "White"
+            break
+
+        bot2_move = bot2.move(board)
+        print(f"Black moves: {bot2_move}")
+        board.push(bot2_move)
+        # print(board)
+        display.update(board.fen(), display_board)
+        evaluation = evaluate_board(board)
+        evaluation_list.append(evaluation)
+        print(f"Evaluation: {evaluation : .2f}")
+
+        if board.is_game_over():
+            potential_winner = "Black"
+            break
+
+        turn_number += 1
+
+    if board.is_checkmate():
+        print(f"{potential_winner} has won by checkmate")
+    elif board.is_stalemate():
+        print("The game is a draw due to stalemate")
+    elif board.is_insufficient_material():
+        print("The game is a draw due to insufficient material")
+    elif board.is_seventyfive_moves():
+        print("The game is a draw due to the seventy-five move rule")
+    elif board.is_fivefold_repetition():
+        print("The game is a draw due to fivefold repetition")
+    else:
+        print("The game has ended for an unknown reason")
+
     print(board)
-    print("Bot 2")
-    bot2_move = bot2.move(board)
-    if bot2_move is None:
-        print("No legal moves left")
-        break
-    board.push(bot2_move)
-    print(board)
+    plt.plot([i+1 for i in range(len(evaluation_list))], evaluation_list)
+    plt.show()
 
-print(f"{board.is_checkmate()=}")
-print(f"{board.is_stalemate()=}")
-print(f"{board.is_insufficient_material()=}")
-print(f"""{"White" if board.turn else "Black"}""")
+if __name__ == "__main__":
+    main()

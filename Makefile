@@ -18,3 +18,6 @@ list_bots:
 		file_name_without_underscores=$$(echo "$$file_name_without_extension" | tr _ ' '); \
 		echo "$$file_name_without_underscores"; \
 	done
+
+profile:
+	python3 chess_profile.py > profiling/profile.txt
