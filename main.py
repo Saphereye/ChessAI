@@ -1,6 +1,6 @@
 import chess
 from bots.random_bot import RandomBot
-from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot
+from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot, AlphaBetaBot
 from bots.helper import *
 from chessboard import display
 import matplotlib.pyplot as plt
@@ -11,15 +11,15 @@ def main():
 
     # bot1 = RandomBot()
     bot1 = FuzzyDFSBot(max_depth=2)
-    # bot2 = GreedyDFSBot(max_depth=2)
-    bot2 = RandomBot()
+    bot2 = AlphaBetaBot(max_depth=4)
+    # bot2 = RandomBot()
 
     board = chess.Board()
 
     potential_winner = None
 
     turn_number = 1
-
+    print(bot1, bot2)
     while True:
         print(f"Turn Number: {turn_number}")
         bot1_move = bot1.move(board)

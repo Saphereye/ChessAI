@@ -10,6 +10,7 @@ requirements:
 
 run:
 	python3 main.py
+	# /home/adarsh/Downloads/pypy3.10-v7.3.13-linux64/bin/pypy3.10 main.py
 
 list_bots:
 	for file_path in $$(find "./bots" -type f ! -path "./bots/__pycache__/*"); do \

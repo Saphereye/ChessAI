@@ -65,16 +65,66 @@ class FuzzyDFSBot(GreedyDFSBot):
 
             possible_moves.append((move, eval_score))
         sorted_moves = sorted(possible_moves, key=lambda x: x[1], reverse=True)
-        weights = log_falloff_weights(len(sorted_moves))
+        weights = self.log_falloff_weights(len(sorted_moves))
 
         final_move = random.choices(population=sorted_moves, weights=weights)[0][0]
-        print(final_move)
+        # print(final_move)
         return final_move
 
-def log_falloff_weights(num_choices):
-    # Generate logarithmic weights with a decreasing factor
-    weights = [1 / (math.log2(i + 2)) for i in range(num_choices)]
-    # Normalize weights to ensure they sum to 1
-    total = sum(weights)
-    normalized_weights = [w / total for w in weights]
-    return normalized_weights
+    def log_falloff_weights(self, num_choices):
+        # Generate logarithmic weights with a decreasing factor
+        weights = [1 / (math.log2(i + 2)) for i in range(num_choices)]
+        # Normalize weights to ensure they sum to 1
+        total = sum(weights)
+        normalized_weights = [w / total for w in weights]
+        return normalized_weights
+
+class AlphaBetaBot(GreedyDFSBot):
+    def __init__(self, max_depth: int) -> None:
+        super().__init__(max_depth)
+
+    def move(self, board: Board) -> Move | None:
+        legal_moves = list(board.legal_moves)
+        best_move = None
+        alpha = float('-inf')
+        beta = float('inf')
+
+        for move in legal_moves:
+            board.push(move)
+            eval_score = self.alpha_beta(board, self.max_depth - 1, alpha, beta, False)
+            board.pop()
+
+            if eval_score > alpha:
+                alpha = eval_score
+                best_move = move
+
+        return best_move
+
+    def alpha_beta(self, board, depth, alpha, beta, maximizing_player):
+        if depth == 0 or board.is_game_over():
+            return evaluate_board(board)
+
+        legal_moves = list(board.legal_moves)
+
+        if maximizing_player:
+            max_eval = float('-inf')
+            for move in legal_moves:
+                board.push(move)
+                eval_score = self.alpha_beta(board, depth - 1, alpha, beta, False)
+                board.pop()
+                max_eval = max(max_eval, eval_score)
+                alpha = max(alpha, eval_score)
+                if beta <= alpha:
+                    break
+            return max_eval
+        else:
+            min_eval = float('inf')
+            for move in legal_moves:
+                board.push(move)
+                eval_score = self.alpha_beta(board, depth - 1, alpha, beta, True)
+                board.pop()
+                min_eval = min(min_eval, eval_score)
+                beta = min(beta, eval_score)
+                if beta <= alpha:
+                    break
+            return min_eval

@@ -3,6 +3,7 @@ from chess import Board
 
 # Credits: Claude Shannon in 1949
 def evaluate_board(board: Board):
+    evaluation = 0.0
     piece_counts = {
         chess.PAWN: [0, 0],
         chess.KNIGHT: [0, 0],
@@ -21,6 +22,15 @@ def evaluate_board(board: Board):
     black_legal_moves = list(board.legal_moves)
 
     board.turn = current_turn
+
+    if board.is_check:
+        evaluation -= 10.0
+    else:
+        if board.gives_check:
+            evaluation += 10.0
+        elif board.is_checkmate:
+            evaluation += 20.0
+    
 
     mobility = [0.1 * len(white_legal_moves), 0.1 * len(black_legal_moves)]
 
