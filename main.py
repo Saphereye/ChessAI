@@ -2,6 +2,7 @@ import chess
 from bots.random_bot import RandomBot
 from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot, AlphaBetaBot, FuzzyPolyglotAlphaBetaBot, FuzzyAlphaBetaBot
 from bots.quiescence_bot import QuiescenceBot
+from bots.stockfish_bot import StockfishBot
 from bots.helper import *
 from chessboard import display
 import matplotlib.pyplot as plt
@@ -11,8 +12,9 @@ def main():
     evaluation_list = []
 
     # bot1 = RandomBot()
-    bot1 = FuzzyDFSBot(max_depth=3)
-    bot2 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
+    bot1 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
+    # bot2 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Titans.bin')
+    bot2 = StockfishBot(engine_path="./engines/stockfish-ubuntu-x86-64-avx2", time_limit=0.1)
     # bot2 = RandomBot()
 
     board = chess.Board()
