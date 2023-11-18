@@ -11,7 +11,7 @@ class GreedyDFSBot(BaseBot):
         self.max_depth = max_depth
         self.memo = {}
     
-    def move(self, board: Board) -> Move | None:
+    def move(self, board: Board):
         legal_moves = list(board.legal_moves)
         best_move = None
         best_eval = float('-inf')
@@ -54,7 +54,7 @@ class FuzzyDFSBot(GreedyDFSBot):
     def __init__(self, max_depth: int) -> None:
         super().__init__(max_depth)
     
-    def move(self, board: Board) -> Move | None:
+    def move(self, board: Board):
         legal_moves = list(board.legal_moves)
         possible_moves = []
 
@@ -83,7 +83,7 @@ class AlphaBetaBot(GreedyDFSBot):
     def __init__(self, max_depth: int) -> None:
         super().__init__(max_depth)
 
-    def move(self, board: Board) -> Move | None:
+    def move(self, board: Board):
         legal_moves = list(board.legal_moves)
         best_move = None
         alpha = float('-inf')
@@ -128,3 +128,63 @@ class AlphaBetaBot(GreedyDFSBot):
                 if beta <= alpha:
                     break
             return min_eval
+
+class IterativeDeepeningBot(BaseBot):
+    def __init__(self, max_depth: int) -> None:
+        self.max_depth = max_depth
+
+    def move(self, board: Board):
+        best_move = None
+        for depth in range(1, self.max_depth + 1):
+            print(f"Iterative Deepening: Depth {depth}")
+            best_move = self.depth_limited_search(board, depth)
+            if best_move is not None:
+                break
+        return best_move
+
+    def depth_limited_search(self, board, depth):
+        legal_moves = list(board.legal_moves)
+        best_move = None
+        best_eval = float('-inf')
+
+        for move in legal_moves:
+            board.push(move)
+            eval_score = self.dfs(board, depth - 1, False)
+            board.pop()
+
+            if eval_score > best_eval:
+                best_eval = eval_score
+                best_move = move
+
+        return best_move
+
+    def dfs(self, board, depth, maximizing_player):
+        if depth == 0 or board.is_game_over():
+            return evaluate_board(board)
+
+        legal_moves = list(board.legal_moves)
+
+        best_move = None
+        if maximizing_player:
+            max_eval = float('-inf')
+            for move in legal_moves:
+                board.push(move)
+                eval_score = self.dfs(board, depth - 1, False)
+                board.pop()
+                if eval_score > max_eval:
+                    max_eval = eval_score
+                    best_move = move
+            return max_eval
+        else:
+            min_eval = float('inf')
+            for move in legal_moves:
+                board.push(move)
+                eval_score = self.dfs(board, depth - 1, True)
+                board.pop()
+                if eval_score < min_eval:
+                    min_eval = eval_score
+                    best_move = move
+            return min_eval
+
+
+

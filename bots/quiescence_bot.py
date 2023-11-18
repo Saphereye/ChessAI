@@ -11,7 +11,7 @@ class QuiescenceBot(BaseBot):
         self.max_depth = max_depth
         self.memo = {}
 
-    def move(self, board: Board) -> Move | None:
+    def move(self, board: Board):
         legal_moves = list(board.legal_moves)
         best_move = None
         alpha = float('-inf')

@@ -1,6 +1,6 @@
 import chess
 from bots.random_bot import RandomBot
-from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot, AlphaBetaBot
+from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot, AlphaBetaBot, IterativeDeepeningBot
 from bots.quiescence_bot import QuiescenceBot
 from bots.helper import *
 from chessboard import display
@@ -12,7 +12,7 @@ def main():
 
     # bot1 = RandomBot()
     bot1 = AlphaBetaBot(max_depth=2)
-    bot2 = QuiescenceBot(max_depth=2)
+    bot2 = IterativeDeepeningBot(max_depth=2)
     # bot2 = RandomBot()
 
     board = chess.Board()

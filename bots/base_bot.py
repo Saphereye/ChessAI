@@ -4,5 +4,5 @@ from abc import ABC, abstractmethod
 
 class BaseBot(ABC):
     @abstractmethod
-    def move(self, board: Board) -> Move | None:
+    def move(self, board: Board):
         pass
