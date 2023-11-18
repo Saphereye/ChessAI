@@ -8,7 +8,7 @@ import math
 import chess.polyglot
 
 class GreedyDFSBot(BaseBot):
-    def __init__(self, max_depth: int) -> None:
+    def __init__(self, max_depth: int = 2) -> None:
         self.max_depth = max_depth
         self.memo = {}
     
@@ -52,7 +52,7 @@ class GreedyDFSBot(BaseBot):
             return min_eval
 
 class FuzzyDFSBot(GreedyDFSBot):
-    def __init__(self, max_depth: int) -> None:
+    def __init__(self, max_depth: int = 2) -> None:
         super().__init__(max_depth)
     
     def move(self, board: Board) -> Move | None:
@@ -81,7 +81,7 @@ class FuzzyDFSBot(GreedyDFSBot):
         return normalized_weights
 
 class AlphaBetaBot(GreedyDFSBot):
-    def __init__(self, max_depth: int) -> None:
+    def __init__(self, max_depth: int = 3) -> None:
         super().__init__(max_depth)
 
     def move(self, board: Board) -> Move | None:
@@ -131,7 +131,7 @@ class AlphaBetaBot(GreedyDFSBot):
             return min_eval
 
 class FuzzyAlphaBetaBot(AlphaBetaBot, FuzzyDFSBot):
-   def __init__(self, max_depth: int) -> None:
+   def __init__(self, max_depth: int = 3) -> None:
        super().__init__(max_depth)
 
    def move(self, board: Board) -> Move | None:
@@ -159,7 +159,7 @@ class FuzzyAlphaBetaBot(AlphaBetaBot, FuzzyDFSBot):
 
 
 class FuzzyPolyglotAlphaBetaBot(FuzzyAlphaBetaBot):
-    def __init__(self, max_depth: int, book_path: str) -> None:
+    def __init__(self, max_depth: int = 3, book_path: str = './polyglot/Human.bin') -> None:
         self.book = chess.polyglot.open_reader(book_path)
         super().__init__(max_depth)
 
@@ -194,7 +194,7 @@ class FuzzyPolyglotAlphaBetaBot(FuzzyAlphaBetaBot):
         return final_move
 
 class IterativeDeepeningBot(GreedyDFSBot):
-    def __init__(self, max_depth: int) -> None:
+    def __init__(self, max_depth: int = 3) -> None:
         self.max_depth = max_depth
 
     def move(self, board: Board):
