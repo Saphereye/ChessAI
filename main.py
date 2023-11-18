@@ -11,8 +11,8 @@ def main():
     evaluation_list = []
 
     # bot1 = RandomBot()
-    bot1 = AlphaBetaBot(max_depth=2)
-    bot2 = QuiescenceBot(max_depth=2)
+    bot1 = AlphaBetaBot(max_depth=1)
+    bot2 = FuzzyDFSBot(max_depth=3)
     # bot2 = RandomBot()
 
     board = chess.Board()
