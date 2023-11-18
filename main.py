@@ -1,6 +1,6 @@
 import chess
 from bots.random_bot import RandomBot
-from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot, AlphaBetaBot, FuzzyPolyglotAlphaBetaBot, FuzzyAlphaBetaBot
+from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot, AlphaBetaBot, FuzzyPolyglotAlphaBetaBot, FuzzyAlphaBetaBot, IterativeDeepeningBot
 from bots.quiescence_bot import QuiescenceBot
 from bots.stockfish_bot import StockfishBot
 from bots.helper import *
@@ -12,10 +12,12 @@ def main():
     evaluation_list = []
 
     # bot1 = RandomBot()
-    bot1 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
-    # bot2 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Titans.bin')
+    # bot1 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
+    # bot1 = FuzzyAlphaBetaBot(max_depth=3)
+    bot1 = IterativeDeepeningBot(max_depth=3)
+    # bot1 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Titans.bin')
     bot2 = StockfishBot(engine_path="./engines/stockfish-ubuntu-x86-64-avx2", time_limit=0.1)
-    # bot2 = RandomBot()
+    # bot2 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
 
     board = chess.Board()
 

@@ -192,3 +192,32 @@ class FuzzyPolyglotAlphaBetaBot(FuzzyAlphaBetaBot):
 
         final_move = random.choices(population=sorted_moves, weights=weights)[0][0]
         return final_move
+
+class IterativeDeepeningBot(GreedyDFSBot):
+    def __init__(self, max_depth: int) -> None:
+        self.max_depth = max_depth
+
+    def move(self, board: Board):
+        best_move = None
+        for depth in range(1, self.max_depth + 1):
+            print(f"Iterative Deepening: Depth {depth}")
+            best_move = self.depth_limited_search(board, depth)
+            if best_move is not None:
+                break
+        return best_move
+
+    def depth_limited_search(self, board, depth):
+        legal_moves = list(board.legal_moves)
+        best_move = None
+        best_eval = float('-inf')
+
+        for move in legal_moves:
+            board.push(move)
+            eval_score = self.dfs(board, depth - 1, False)
+            board.pop()
+
+            if eval_score > best_eval:
+                best_eval = eval_score
+                best_move = move
+
+        return best_move
