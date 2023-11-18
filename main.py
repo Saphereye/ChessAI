@@ -1,6 +1,7 @@
 import chess
 from bots.random_bot import RandomBot
 from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot, AlphaBetaBot
+from bots.quiescence_bot import QuiescenceBot
 from bots.helper import *
 from chessboard import display
 import matplotlib.pyplot as plt
@@ -10,8 +11,8 @@ def main():
     evaluation_list = []
 
     # bot1 = RandomBot()
-    bot1 = FuzzyDFSBot(max_depth=2)
-    bot2 = AlphaBetaBot(max_depth=4)
+    bot1 = AlphaBetaBot(max_depth=2)
+    bot2 = QuiescenceBot(max_depth=2)
     # bot2 = RandomBot()
 
     board = chess.Board()
