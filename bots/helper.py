@@ -452,7 +452,7 @@ def evaluate_board(board: Board):
         + 320 * (piece_counts[chess.BISHOP][0] - piece_counts[chess.BISHOP][1])
         + 280 * (piece_counts[chess.KNIGHT][0] - piece_counts[chess.KNIGHT][1])
         + 100 * (piece_counts[chess.PAWN][0] - piece_counts[chess.PAWN][1])
-        - 50 * (blocked_pawns[0] - blocked_pawns[1])
+        - 100 * (blocked_pawns[0] - blocked_pawns[1])
         + 10 * (mobility[0] - mobility[1])
     )
 

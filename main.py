@@ -1,6 +1,6 @@
 import chess
 from bots.random_bot import RandomBot
-from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot, AlphaBetaBot
+from bots.dfs_bot import GreedyDFSBot, FuzzyDFSBot, AlphaBetaBot, FuzzyPolyglotAlphaBetaBot, FuzzyAlphaBetaBot
 from bots.quiescence_bot import QuiescenceBot
 from bots.helper import *
 from chessboard import display
@@ -11,8 +11,8 @@ def main():
     evaluation_list = []
 
     # bot1 = RandomBot()
-    bot1 = AlphaBetaBot(max_depth=1)
-    bot2 = FuzzyDFSBot(max_depth=3)
+    bot1 = FuzzyDFSBot(max_depth=3)
+    bot2 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
     # bot2 = RandomBot()
 
     board = chess.Board()

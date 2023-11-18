@@ -5,6 +5,7 @@ from bots.helper import *
 from bots.helper import Board
 import random
 import math
+import chess.polyglot
 
 class GreedyDFSBot(BaseBot):
     def __init__(self, max_depth: int) -> None:
@@ -128,3 +129,66 @@ class AlphaBetaBot(GreedyDFSBot):
                 if beta <= alpha:
                     break
             return min_eval
+
+class FuzzyAlphaBetaBot(AlphaBetaBot, FuzzyDFSBot):
+   def __init__(self, max_depth: int) -> None:
+       super().__init__(max_depth)
+
+   def move(self, board: Board) -> Move | None:
+        possible_moves = []
+        legal_moves = list(board.legal_moves)
+        best_move = None
+        alpha = float('-inf')
+        beta = float('inf')
+
+        for move in legal_moves:
+            board.push(move)
+            eval_score = self.alpha_beta(board, self.max_depth - 1, alpha, beta, False)
+            board.pop()
+
+            possible_moves.append((move, eval_score))
+
+            if eval_score > alpha:
+                alpha = eval_score
+
+        sorted_moves = sorted(possible_moves, key=lambda x: x[1], reverse=True)
+        weights = self.log_falloff_weights(len(sorted_moves))
+
+        final_move = random.choices(population=sorted_moves, weights=weights)[0][0]
+        return final_move
+
+
+class FuzzyPolyglotAlphaBetaBot(FuzzyAlphaBetaBot):
+    def __init__(self, max_depth: int, book_path: str) -> None:
+        self.book = chess.polyglot.open_reader(book_path)
+        super().__init__(max_depth)
+
+    def move(self, board: Board) -> Move | None:
+        try:
+            move = self.book.find(board).move
+            print(f"found in bin: {move}")
+            return move
+        except IndexError:
+            pass
+
+        possible_moves = []
+        legal_moves = list(board.legal_moves)
+        best_move = None
+        alpha = float('-inf')
+        beta = float('inf')
+
+        for move in legal_moves:
+            board.push(move)
+            eval_score = self.alpha_beta(board, self.max_depth - 1, alpha, beta, False)
+            board.pop()
+
+            possible_moves.append((move, eval_score))
+
+            if eval_score > alpha:
+                alpha = eval_score
+
+        sorted_moves = sorted(possible_moves, key=lambda x: x[1], reverse=True)
+        weights = self.log_falloff_weights(len(sorted_moves))
+
+        final_move = random.choices(population=sorted_moves, weights=weights)[0][0]
+        return final_move
