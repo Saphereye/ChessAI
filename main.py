@@ -6,11 +6,10 @@ from bots.dfs_bot import (
     AlphaBetaBot,
     FuzzyPolyglotAlphaBetaBot,
     FuzzyAlphaBetaBot,
-    IterativeDeepeningBot,
     NegamaxBot
 )
 from bots.mcts_bot import MonteCarloTreeSearch
-# from bots.neuralnetwork import NNFuzzyPolyglotAlphaBetaBot
+from bots.neuralnetwork import NNFuzzyPolyglotAlphaBetaBot
 from bots.quiescence_bot import QuiescenceBot
 from bots.stockfish_bot import StockfishBot
 from bots.helper import *
@@ -20,8 +19,8 @@ from tqdm import tqdm
 
 
 def competetion():
-    class1 = NegamaxBot
-    class2 = FuzzyAlphaBetaBot
+    class1 = NNFuzzyPolyglotAlphaBetaBot
+    class2 = QuiescenceBot
 
     # win, loss, ties
     scores = [0, 0, 0]
@@ -103,13 +102,13 @@ def main():
     # bot1 = RandomBot()
     # bot1 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
     # bot1 = FuzzyAlphaBetaBot(max_depth=3)
-    bot2 = StockfishBot()
+    bot2 = NegamaxBot(max_depth=1)
     # bot1 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Titans.bin')
     # bot2 = RandomBot()
     # bot2 = StockfishBot(
     #     engine_path="./engines/stockfish-ubuntu-x86-64-avx2", time_limit=0.1
     # )
-    bot1 = FuzzyPolyglotAlphaBetaBot()
+    bot1 = MonteCarloTreeSearch(iterations=1)
     # bot2 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
 
     board = chess.Board()
@@ -167,4 +166,4 @@ def main():
 
 
 if __name__ == "__main__":
-    competetion()
+    main()
