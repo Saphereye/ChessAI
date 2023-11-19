@@ -6,7 +6,7 @@ from math import log, sqrt, e, inf
 from chessboard import display
 
 class MonteCarloTreeSearch:
-    def __init__(self, iterations: int = 5):
+    def __init__(self, iterations: int = 1):
         self.root = None
         self.iterations = iterations
 
