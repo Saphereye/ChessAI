@@ -7,9 +7,10 @@ from bots.dfs_bot import (
     FuzzyPolyglotAlphaBetaBot,
     FuzzyAlphaBetaBot,
     IterativeDeepeningBot,
+    NegamaxBot
 )
 from bots.mcts_bot import MonteCarloTreeSearch
-from bots.neuralnetwork import NNFuzzyPolyglotAlphaBetaBot
+# from bots.neuralnetwork import NNFuzzyPolyglotAlphaBetaBot
 from bots.quiescence_bot import QuiescenceBot
 from bots.stockfish_bot import StockfishBot
 from bots.helper import *
@@ -19,7 +20,7 @@ from tqdm import tqdm
 
 
 def competetion():
-    class1 = NNFuzzyPolyglotAlphaBetaBot
+    class1 = NegamaxBot
     class2 = FuzzyAlphaBetaBot
 
     # win, loss, ties
@@ -102,13 +103,13 @@ def main():
     # bot1 = RandomBot()
     # bot1 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
     # bot1 = FuzzyAlphaBetaBot(max_depth=3)
-    bot1 = MonteCarloTreeSearch(iterations=1)
+    bot2 = StockfishBot()
     # bot1 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Titans.bin')
     # bot2 = RandomBot()
     # bot2 = StockfishBot(
     #     engine_path="./engines/stockfish-ubuntu-x86-64-avx2", time_limit=0.1
     # )
-    bot2 = RandomBot()
+    bot1 = FuzzyPolyglotAlphaBetaBot()
     # bot2 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
 
     board = chess.Board()

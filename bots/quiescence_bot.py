@@ -8,7 +8,7 @@ import math
 
 class QuiescenceBot(BaseBot):
     def __init__(self, max_depth: int = 3) -> None:
-        super().__init__(max_depth)
+        self.max_depth = max_depth
 
     def move(self, board: Board) -> Move | None:
         legal_moves = list(board.legal_moves)

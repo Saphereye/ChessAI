@@ -221,3 +221,38 @@ class IterativeDeepeningBot(GreedyDFSBot):
                 best_move = move
 
         return best_move
+
+class NegamaxBot(BaseBot):
+    def __init__(self, max_depth: int = 3) -> None:
+        self.max_depth = max_depth
+    
+    def move(self, board: Board) -> Move | None:
+        legal_moves = list(board.legal_moves)
+        best_move = None
+        best_eval = float('-inf')
+
+        for move in legal_moves:
+            board.push(move)
+            eval_score = -self.negamax(board, self.max_depth - 1)
+            board.pop()
+
+            if eval_score > best_eval:
+                best_eval = eval_score
+                best_move = move
+
+        return best_move
+    
+    def negamax(self, board, depth):
+        if depth == 0 or board.is_game_over():
+            return evaluate_board(board)
+
+        legal_moves = list(board.legal_moves)
+        max_eval = float('-inf')
+
+        for move in legal_moves:
+            board.push(move)
+            eval_score = -self.negamax(board, depth - 1)
+            board.pop()
+            max_eval = max(max_eval, eval_score)
+        
+        return max_eval
