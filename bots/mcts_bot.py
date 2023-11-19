@@ -1,199 +1,201 @@
 import chess
 import chess.pgn
-import chess.engine
 import random
 import time
-from math import log,sqrt,e,inf
+from math import log, sqrt, e, inf
 from chessboard import display
 
-#defining template for each node in state tree
-class node():
+class MonteCarloTreeSearch:
     def __init__(self):
-        self.state = chess.Board()
-        self.action = ''
-        self.children = set()
-        self.parent = None
-        self.N = 0
-        self.n = 0
-        self.v = 0
+        self.root = None
 
-#calculating UCB1 for current node
-def ucb1(curr_node):
-    ans = curr_node.v+2*(sqrt(log(curr_node.N+e+(10**-6))/(curr_node.n+(10**-10))))
-    return ans
+    class node():
+        def __init__(self):
+            self.state = chess.Board()
+            self.action = ''
+            self.children = set()
+            self.parent = None
+            self.N = 0
+            self.n = 0
+            self.v = 0
 
-def rollout(curr_node):
-    
-    if(curr_node.state.is_game_over()):
-        board = curr_node.state
-        if(board.result()=='1-0'):
-            #print("h1")
-            return (1,curr_node)
-        elif(board.result()=='0-1'):
-            #print("h2")
-            return (-1,curr_node)
-        else:
-            return (0.5,curr_node)
-    
-    all_moves = [curr_node.state.san(i) for i in list(curr_node.state.legal_moves)]
-    
-    for i in all_moves:
-        tmp_state = chess.Board(curr_node.state.fen())
-        tmp_state.push_san(i)
-        child = node()
-        child.state = tmp_state #creating a child
-        child.parent = curr_node
-        curr_node.children.add(child) #initializing child as children of current node
-    rnd_state = random.choice(list(curr_node.children)) #picking random state from children
+    def ucb1(curr_node):
+        ans = curr_node.v + 2 * (sqrt(log(curr_node.N + e + (10 ** -6)) / (curr_node.n + (10 ** -10))))
+        return ans
 
-    return rollout(rnd_state)
+    def rollout(curr_node):
+        if curr_node.state.is_game_over():
+            board = curr_node.state
+            if board.result() == '1-0':
+                return 1, curr_node
+            elif board.result() == '0-1':
+                return -1, curr_node
+            else:
+                return 0.5, curr_node
 
-def expand(curr_node,white):
-    if(len(curr_node.children)==0):
-        return curr_node
-    max_ucb = -inf
-    if(white):
-        idx = -1
+        all_moves = [curr_node.state.san(i) for i in list(curr_node.state.legal_moves)]
+
+        for i in all_moves:
+            tmp_state = chess.Board(curr_node.state.fen())
+            tmp_state.push_san(i)
+            child = MonteCarloTreeSearch.node()
+            child.state = tmp_state
+            child.parent = curr_node
+            curr_node.children.add(child)
+        rnd_state = random.choice(list(curr_node.children))
+
+        return MonteCarloTreeSearch.rollout(rnd_state)
+
+    def expand(curr_node, white):
+        if len(curr_node.children) == 0:
+            return curr_node
         max_ucb = -inf
-        sel_child = None
-        for i in curr_node.children:
-            tmp = ucb1(i)
-            if(tmp>max_ucb):
-                idx = i
-                max_ucb = tmp
-                sel_child = i
-
-        return(expand(sel_child,0))
-
-    else:
-        idx = -1
-        min_ucb = inf
-        sel_child = None
-        for i in curr_node.children:
-            tmp = ucb1(i)
-            if(tmp<min_ucb):
-                idx = i
-                min_ucb = tmp
-                sel_child = i
-
-        return expand(sel_child,1)
-
-def rollback(curr_node,reward):
-    curr_node.n+=1
-    curr_node.v+=reward
-    while(curr_node.parent!=None):
-        curr_node.N+=1
-        curr_node = curr_node.parent
-    return curr_node
-
-def mcts_pred(curr_node,over,white,iterations=10):
-    if(over):
-        return -1
-    all_moves = [curr_node.state.san(i) for i in list(curr_node.state.legal_moves)]
-    map_state_move = dict()
-    
-    for i in all_moves:
-        tmp_state = chess.Board(curr_node.state.fen())
-        tmp_state.push_san(i)
-        child = node()
-        child.state = tmp_state
-        child.parent = curr_node
-        curr_node.children.add(child)
-        map_state_move[child] = i
-        
-    while(iterations>0):
-        if(white):
+        if white:
             idx = -1
             max_ucb = -inf
             sel_child = None
             for i in curr_node.children:
-                tmp = ucb1(i)
-                if(tmp>max_ucb):
+                tmp = MonteCarloTreeSearch.ucb1(i)
+                if tmp > max_ucb:
                     idx = i
                     max_ucb = tmp
                     sel_child = i
-            ex_child = expand(sel_child,0)
-            reward,state = rollout(ex_child)
-            curr_node = rollback(state,reward)
-            iterations-=1
+
+            return MonteCarloTreeSearch.expand(sel_child, 0)
+
         else:
             idx = -1
             min_ucb = inf
             sel_child = None
             for i in curr_node.children:
-                tmp = ucb1(i)
-                if(tmp<min_ucb):
+                tmp = MonteCarloTreeSearch.ucb1(i)
+                if tmp < min_ucb:
                     idx = i
                     min_ucb = tmp
                     sel_child = i
 
-            ex_child = expand(sel_child,1)
+            return MonteCarloTreeSearch.expand(sel_child, 1)
 
-            reward,state = rollout(ex_child)
+    def rollback(curr_node, reward):
+        curr_node.n += 1
+        curr_node.v += reward
+        while curr_node.parent is not None:
+            curr_node.N += 1
+            curr_node = curr_node.parent
+        return curr_node
 
-            curr_node = rollback(state,reward)
-            iterations-=1
-    if(white):
+    def mcts_pred(curr_node, over, white, iterations=10):
+        if over:
+            return -1
+        all_moves = [curr_node.state.san(i) for i in list(curr_node.state.legal_moves)]
+        map_state_move = dict()
+
+        for i in all_moves:
+            tmp_state = chess.Board(curr_node.state.fen())
+            tmp_state.push_san(i)
+            child = MonteCarloTreeSearch.node()
+            child.state = tmp_state
+            child.parent = curr_node
+            curr_node.children.add(child)
+            map_state_move[child] = i
+
+        while iterations > 0:
+            if white:
+                idx = -1
+                max_ucb = -inf
+                sel_child = None
+                for i in curr_node.children:
+                    tmp = MonteCarloTreeSearch.ucb1(i)
+                    if tmp > max_ucb:
+                        idx = i
+                        max_ucb = tmp
+                        sel_child = i
+                ex_child = MonteCarloTreeSearch.expand(sel_child, 0)
+                reward, state = MonteCarloTreeSearch.rollout(ex_child)
+                curr_node = MonteCarloTreeSearch.rollback(state, reward)
+                iterations -= 1
+            else:
+                idx = -1
+                min_ucb = inf
+                sel_child = None
+                for i in curr_node.children:
+                    tmp = MonteCarloTreeSearch.ucb1(i)
+                    if tmp < min_ucb:
+                        idx = i
+                        min_ucb = tmp
+                        sel_child = i
+
+                ex_child = MonteCarloTreeSearch.expand(sel_child, 1)
+
+                reward, state = MonteCarloTreeSearch.rollout(ex_child)
+
+                curr_node = MonteCarloTreeSearch.rollback(state, reward)
+                iterations -= 1
+        if white:
+
+            mx = -inf
+            idx = -1
+            selected_move = ''
+            for i in (curr_node.children):
+                tmp = MonteCarloTreeSearch.ucb1(i)
+                if tmp > mx:
+                    mx = tmp
+                    selected_move = map_state_move[i]
+            return selected_move
+        else:
+            mn = inf
+            idx = -1
+            selected_move = ''
+            for i in (curr_node.children):
+                tmp = MonteCarloTreeSearch.ucb1(i)
+                if tmp < mn:
+                    mn = tmp
+                    selected_move = map_state_move[i]
+            return selected_move
+
+    def move(self, board, turn):
         
-        mx = -inf
-        idx = -1
-        selected_move = ''
-        for i in (curr_node.children):
-            tmp = ucb1(i)
-            if(tmp>mx):
-                mx = tmp
-                selected_move = map_state_move[i]
-        return selected_move
-    else:
-        mn = inf
-        idx = -1
-        selected_move = ''
-        for i in (curr_node.children):
-            tmp = ucb1(i)
-            if(tmp<mn):
-                mn = tmp
-                selected_move = map_state_move[i]
-        return selected_move
+        root = MonteCarloTreeSearch.node()
+        root.state = board
+        result = MonteCarloTreeSearch.mcts_pred(root, board.is_game_over(), turn)
+        return result
 
 
-'''def display_board(board):
-    display.display(board)'''
+'''def main():
+    board = chess.Board()
+    game_board = display.start()
 
-board = chess.Board()
-game_board = display.start()
-#engine = chess.engine.SimpleEngine.popen_uci(r'C:\Users\ishaa\Desktop\chess_engine\stockfish-11-win\Windows\stockfish_20011801_x64.exe')
+    mcts = MonteCarloTreeSearch()
 
-white = 1
-moves = 0
-pgn = []
-game = chess.pgn.Game()
-evaluations = []
-sm = 0
-cnt = 0
-while((not board.is_game_over())):
-    all_moves = [board.san(i) for i in list(board.legal_moves)]
-    start = time.time()
-    root = node()
-    root.state = board
-    result = mcts_pred(root,board.is_game_over(),white)
-    sm+=(time.time()-start)
-    board.push_san(result)
-    print(result)
-    pgn.append(result)
-    white ^= 1
-    cnt+=1
-    display.check_for_quit()
-    display.update(board.fen(), game_board)
-    
-    moves+=1
-    #board_evaluation = evaluate(board.fen().split()[0])
-    #evaluations.append(board_evaluation)
-print("Average Time per move = ",sm/cnt)
-print(board)
-print(" ".join(pgn))
-print()
-#print(evaluations)
-print(board.result())
-game.headers["Result"] = board.result()
-print(game)
-#engine.quit()
+    moves = 0
+    pgn = []
+    game = chess.pgn.Game()
+    evaluations = []
+    sm = 0
+    cnt = 0
+
+    while not board.is_game_over():
+        all_moves = [board.san(i) for i in list(board.legal_moves)]
+        start = time.time()
+        result = mcts.move(board, board.turn)
+        sm += (time.time() - start)
+        board.push_san(result)
+        print(result)
+        pgn.append(result)
+        display.check_for_quit()
+        display.update(board.fen(), game_board)
+
+        moves += 1
+        cnt += 1
+
+    print("Average Time per move = ", sm / cnt)
+    print(board)
+    print(" ".join(pgn))
+    print()
+    print(board.result())
+    game.headers["Result"] = board.result()
+    print(game)
+
+
+if __name__ == "__main__":
+    main()'''
