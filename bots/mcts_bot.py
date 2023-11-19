@@ -153,12 +153,11 @@ class MonteCarloTreeSearch:
                     selected_move = map_state_move[i]
             return selected_move
 
-    def move(self, board, turn):
-        
+    def move(self, board):
         root = MonteCarloTreeSearch.node()
         root.state = board
-        result = MonteCarloTreeSearch.mcts_pred(root, board.is_game_over(), turn)
-        return result
+        result = MonteCarloTreeSearch.mcts_pred(root, board.is_game_over(), True if board.turn == chess.WHITE else False)
+        return board.parse_san(result)
 
 
 '''def main():

@@ -7,7 +7,7 @@ import random
 import math
 
 class QuiescenceBot(BaseBot):
-    def __init__(self, max_depth: int) -> None:
+    def __init__(self, max_depth: int = 4) -> None:
         self.max_depth = max_depth
         self.memo = {}
 

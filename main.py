@@ -8,6 +8,8 @@ from bots.dfs_bot import (
     FuzzyAlphaBetaBot,
     IterativeDeepeningBot,
 )
+from bots.mcts_bot import MonteCarloTreeSearch
+# from bots.neuralnetwork import NNFuzzyPolyglotAlphaBetaBot
 from bots.quiescence_bot import QuiescenceBot
 from bots.stockfish_bot import StockfishBot
 from bots.helper import *
@@ -16,7 +18,7 @@ import matplotlib.pyplot as plt
 
 
 def competetion():
-    bots = [FuzzyDFSBot, FuzzyAlphaBetaBot]
+    bots = [QuiescenceBot, FuzzyDFSBot]
 
     for i in range(len(bots)):
         for j in range(i + 1, len(bots)):
@@ -100,11 +102,12 @@ def main():
     # bot1 = RandomBot()
     # bot1 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
     # bot1 = FuzzyAlphaBetaBot(max_depth=3)
-    bot1 = IterativeDeepeningBot(max_depth=3)
+    bot1 = MonteCarloTreeSearch()
     # bot1 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Titans.bin')
-    bot2 = StockfishBot(
-        engine_path="./engines/stockfish-ubuntu-x86-64-avx2", time_limit=0.1
-    )
+    bot2 = RandomBot()
+    # bot2 = StockfishBot(
+    #     engine_path="./engines/stockfish-ubuntu-x86-64-avx2", time_limit=0.1
+    # )
     # bot2 = FuzzyPolyglotAlphaBetaBot(max_depth=3, book_path='./polyglot/Human.bin')
 
     board = chess.Board()
@@ -116,7 +119,7 @@ def main():
     while True:
         print(f"Turn Number: {turn_number}")
         bot1_move = bot1.move(board)
-        print(f"White moves: {bot1_move}")
+        print(f"White moves: {type(bot1_move)}")
         board.push(bot1_move)
         # print(board)
         display.update(board.fen(), display_board)
@@ -162,4 +165,4 @@ def main():
 
 
 if __name__ == "__main__":
-    competetion()
+    main()

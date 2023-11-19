@@ -166,7 +166,7 @@ class FuzzyPolyglotAlphaBetaBot(FuzzyAlphaBetaBot):
     def move(self, board: Board) -> Move | None:
         try:
             move = self.book.find(board).move
-            print(f"found in bin: {move}")
+            # print(f"found in bin: {move}")
             return move
         except IndexError:
             pass
@@ -194,7 +194,7 @@ class FuzzyPolyglotAlphaBetaBot(FuzzyAlphaBetaBot):
         return final_move
 
 class IterativeDeepeningBot(GreedyDFSBot):
-    def __init__(self, max_depth: int = 3) -> None:
+    def __init__(self, max_depth: int = 100) -> None:
         self.max_depth = max_depth
 
     def move(self, board: Board):
