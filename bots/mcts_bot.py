@@ -33,7 +33,7 @@ class MonteCarloTreeSearch:
             else:
                 return 0.5, curr_node
 
-        all_moves = [curr_node.state.san(i) for i in list(curr_node.state.legal_moves)]
+        '''all_moves = [curr_node.state.san(i) for i in list(curr_node.state.legal_moves)]
 
         for i in all_moves:
             tmp_state = chess.Board(curr_node.state.fen())
@@ -41,7 +41,19 @@ class MonteCarloTreeSearch:
             child = MonteCarloTreeSearch.node()
             child.state = tmp_state
             child.parent = curr_node
+            curr_node.children.add(child)'''
+        
+        all_moves = {curr_node.state.san(move) for move in curr_node.state.legal_moves}
+
+        for move in all_moves:
+            tmp_state = curr_node.state.copy()
+            tmp_state.push_san(move)
+            child = MonteCarloTreeSearch.node()
+            child.state = tmp_state
+            child.parent = curr_node
             curr_node.children.add(child)
+
+
         rnd_state = random.choice(list(curr_node.children))
 
         return MonteCarloTreeSearch.rollout(rnd_state)
