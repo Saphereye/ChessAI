@@ -6,8 +6,9 @@ from math import log, sqrt, e, inf
 from chessboard import display
 
 class MonteCarloTreeSearch:
-    def __init__(self):
+    def __init__(self, iterations: int = 5):
         self.root = None
+        self.iterations = iterations
 
     class node():
         def __init__(self):
@@ -168,7 +169,7 @@ class MonteCarloTreeSearch:
     def move(self, board):
         root = MonteCarloTreeSearch.node()
         root.state = board
-        result = MonteCarloTreeSearch.mcts_pred(root, board.is_game_over(), True if board.turn == chess.WHITE else False)
+        result = MonteCarloTreeSearch.mcts_pred(root, board.is_game_over(), True if board.turn == chess.WHITE else False, self.iterations)
         return board.parse_san(result)
 
 
